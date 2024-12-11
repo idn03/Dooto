@@ -3,15 +3,17 @@ import Row from './Row';
 import Icon from './Icon';
 
 const Header = () => {
-    return <View style={styles.header}>
-    <Row style={styles.headerRow}>
-        <Image source={require('../../assets/logo.png')} style={styles.logo} />
-        <Row>
-            <Icon source={require('../../assets/icons/notify.png')} style={ styles.icons }></Icon>
-            <Icon source={require('../../assets/icons/setting-btn.png')} style={ styles.icons }></Icon>
-        </Row>
-    </Row>
-</View>
+    return (
+        <View style={styles.header}>
+            <Row style={styles.headerRow}>
+                <Image source={require('../../assets/logo.png')} style={styles.logo} />
+                <Row>
+                    <Icon source={require('../../assets/icons/notify.png')} style={ styles.icons }></Icon>
+                    <Icon source={require('../../assets/icons/setting-btn.png')} style={ styles.icons }></Icon>
+                </Row>
+            </Row>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({

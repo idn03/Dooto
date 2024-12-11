@@ -7,7 +7,7 @@ interface RowProps {
 }
 
 const Row: React.FC<RowProps> = ({ children, style }) => {
-    return <View style={[styles.row, style]}>{children}</View>;
+    return <View style={[ styles.row, style ]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({

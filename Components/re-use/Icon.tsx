@@ -1,4 +1,3 @@
-import React from 'react';
 import { Image, StyleSheet, ImageStyle } from 'react-native';
 
 interface IconProps {
