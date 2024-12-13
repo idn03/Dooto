@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     textDefault: {
         fontFamily: "Avenir",
         color: "#333",
+        fontSize: 15,
     },
 });
 

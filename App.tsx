@@ -1,30 +1,98 @@
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, TextInput, Pressable, FlatList, Image, Text } from 'react-native';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Row, Header, CustomText, Divider } from './Components';
+import { useState } from 'react';
+
+function setID() {
+    return Math.random();
+}
+
+interface Task {
+    id: number;
+    name: String;
+    isDone: boolean;
+}
 
 export default function App() {
+    const [todo, setTodo] = useState("");
+    const [listTodo, setListTodo] = useState<Task[]>([]);
+
     return (
         <View style={styles.background}>
             {/* Header */}
             < Header />
 
             {/* Main */}
-            <View style={styles.main}>
+            <View style={styles.body}>
                 {/* Status */}
                 <Row style={styles.status}>
                     <View style={styles.statusItem}>
-                        <CustomText style={ styles.statusAmount }>0</CustomText>
-                        <CustomText style={ styles.statusTitle }>In Progress</CustomText>
+                        <CustomText style={ styles.statusAmount }>{`${listTodo.filter((task) => !task.isDone).length}`}</CustomText>
+                        <CustomText style={ styles.title }>In Progress</CustomText>
                     </View>
 
                     <View style={styles.statusItem}>
-                        <CustomText style={ styles.statusTitle }>Completed</CustomText>
-                        <CustomText style={ styles.statusAmount }>0</CustomText>
+                        <CustomText style={ styles.title }>Completed</CustomText>
+                        <CustomText style={ styles.statusAmount }>{`${listTodo.filter((task) => task.isDone).length}`}</CustomText>
                     </View>
                 </Row>
                 < Divider />
-            
-                {/* Tasks */}
+
+                {/* Add New Task */}
+                <View style={styles.mainContent}>
+                    <Row>
+                        < TextInput 
+                            style={styles.inputBar} 
+                            placeholder='Add new task here...' 
+                            maxLength={25}
+                            onChangeText={(value) => setTodo(value)}
+                        />
+                        < Pressable 
+                            style={styles.addTaskButton} 
+                            onPress={
+                                () => setListTodo([...listTodo, { id: setID(), name: todo, isDone: false }])
+                            }
+                        >
+                            <CustomText style={{fontWeight: 700}}>ADD</CustomText>
+                        </Pressable>
+                    </Row>
                 
+                    {/* To-do List */}
+                    <View style={{marginTop: 40}}>
+                        <CustomText style={styles.title}>To-do List</CustomText>
+                        < FlatList
+                            data={listTodo}
+                            keyExtractor={(item) => item.id.toString()}
+                            renderItem={ ({item}) => {
+                                return (
+                                    <Row style={styles.todoItem}>
+                                        <Row>
+                                            <BouncyCheckbox 
+                                                onPress={
+                                                    (isDone: boolean) => { 
+                                                        item.isDone = isDone;
+                                                        setListTodo([...listTodo]);
+                                                    }
+                                                }
+                                                fillColor='#333'
+                                                style={styles.checkbox}
+                                            />
+                                            <Text style={[styles.todoContent, item.isDone && { opacity: 0.6 }]}>{item.name}</Text>
+                                        </Row>
+                                        < Pressable 
+                                            onPress={() => {
+                                                const newList = listTodo.filter((task) => task.id !== item.id);
+                                                setListTodo(newList);
+                                            }}
+                                        >
+                                            < Image style={styles.removeTaskIcon} source={require('./assets/icons/minus.png')} />
+                                        </Pressable>
+                                    </Row>
+                                );
+                            }}
+                        />
+                    </View>
+                </View>
             </View>
         </View>
     );
@@ -33,14 +101,18 @@ export default function App() {
 const styles = StyleSheet.create({
     background: {
         flex: 1,
-        backgroundColor: "#B4B4B8",
+        backgroundColor: '#B4B4B4'
     },
-    main: {
+    body: {
         flex: 1,
-        backgroundColor: "#FFF",
+        backgroundColor: '#FFF',
         borderTopLeftRadius: 60,
         borderTopRightRadius: 60,
-        boxShadow: "0 -2 4 0 rgba(0, 0, 0, 0.25)",
+        boxShadow: '0 -2 4 0 rgba(0, 0, 0, 0.25)',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 700
     },
     status: {
         justifyContent: 'space-around',
@@ -49,12 +121,46 @@ const styles = StyleSheet.create({
         padding: 32,
         alignItems: 'center',
     },
-    statusTitle: {
-        fontSize: 24,
-        fontWeight: 700
-    },
     statusAmount: {
         fontSize: 48,
         fontWeight: 700
     },
+    mainContent: {
+        margin: 40,
+    },
+    inputBar: {
+        padding: 15,
+        backgroundColor: 'rgba(180, 180, 180, 0.25)',
+        borderRadius: 30,
+        width: '100%'
+    },
+    addTaskButton: {
+        paddingVertical: 13,
+        paddingHorizontal: 30,
+        backgroundColor: '#FF6969',
+        borderRadius: 30,
+        position: 'relative',
+        right: 90,
+    },
+    todoItem: {
+        width: '100%',
+        justifyContent: 'space-between'
+    },
+    checkbox: {
+        marginTop: 20,
+        marginLeft: 10,
+        width: 25,
+    },
+    todoContent: {
+        paddingTop: 20,
+        paddingHorizontal: 10,
+        fontFamily: "Avenir",
+        color: "#333",
+        fontSize: 18
+    },
+    removeTaskIcon: {
+        paddingTop: 20,
+        height: 24,
+        width: 24,
+    }
 });
