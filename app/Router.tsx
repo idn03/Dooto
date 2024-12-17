@@ -13,13 +13,13 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 const AppRouter: React.FC = () => {
     return (
         <NavigationContainer>
-        < RootStack.Navigator
-            initialRouteName="Home"
-            screenOptions={{ headerShown: false,}}
-        >
-            < RootStack.Screen name="Home" component={HomeScreen} />
-            < RootStack.Screen name="Setting" component={SettingScreen} />
-        </RootStack.Navigator>
+            < RootStack.Navigator
+                initialRouteName="Home"
+                screenOptions={{ headerShown: false,}}
+            >
+                < RootStack.Screen name="Home" component={HomeScreen} />
+                < RootStack.Screen name="Setting" component={SettingScreen} />
+            </RootStack.Navigator>
         </NavigationContainer>
     );
 };

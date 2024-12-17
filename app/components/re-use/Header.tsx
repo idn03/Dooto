@@ -1,14 +1,13 @@
 import {View, StyleSheet, Image, Pressable } from 'react-native';
 import {
-    createStaticNavigation,
     NavigationProp,
     useNavigation,
 } from '@react-navigation/native';
-
+import { RootStackParamList } from '../../Router';
 import Row from './Row';
 import Icon from './Icon';
 import CustomText from '../override/Text';
-import { RootStackParamList } from '../../Router';
+import DootoImgs from '../../../assets/assets';
 
 const Header = () => {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
@@ -16,11 +15,12 @@ const Header = () => {
     return (
         <View style={styles.header}>
             <Row style={styles.headerRow}>
-                <Image source={require('../../../assets/logo.png')} style={styles.logo} />
+                <Image source={DootoImgs.logo} style={styles.logo} />
+
                 <Row>
-                    <Icon source={require('../../../assets/icons/notify.png')} style={ styles.icons }></Icon>
+                    <Icon source={DootoImgs.icons.notify} style={ styles.icons }></Icon>
                     <Pressable onPress={() => navigation.navigate('Setting')}>
-                        <Icon source={require('../../../assets/icons/setting-btn.png')} style={ styles.icons }></Icon>
+                        <Icon source={DootoImgs.icons.setting} style={ styles.icons }></Icon>
                     </Pressable>
                 </Row>
             </Row>
