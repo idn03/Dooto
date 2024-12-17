@@ -1,6 +1,6 @@
 import { StyleSheet, View, TextInput, Pressable, FlatList, Image, Text } from 'react-native';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { Row, Header, CustomText, Divider } from './Components';
+import { Row, Header, CustomText, Divider } from '../components';
 import { useState } from 'react';
 
 function setID() {
@@ -13,7 +13,7 @@ interface Task {
     isDone: boolean;
 }
 
-export default function App() {
+const HomeScreen = () => {
     const [todo, setTodo] = useState("");
     const [listTodo, setListTodo] = useState<Task[]>([]);
 
@@ -58,11 +58,13 @@ export default function App() {
                     </Row>
                 
                     {/* To-do List */}
-                    <View style={{marginTop: 40}}>
+                    <View style={{flex: 1, marginTop: 40}}>
                         <CustomText style={styles.title}>To-do List</CustomText>
                         < FlatList
                             data={listTodo}
                             keyExtractor={(item) => item.id.toString()}
+                            keyboardShouldPersistTaps="handled"
+                            style={{ flex: 1 }}
                             renderItem={ ({item}) => {
                                 return (
                                     <Row style={styles.todoItem}>
@@ -85,7 +87,7 @@ export default function App() {
                                                 setListTodo(newList);
                                             }}
                                         >
-                                            < Image style={styles.removeTaskIcon} source={require('./assets/icons/minus.png')} />
+                                            < Image style={styles.removeTaskIcon} source={require('../../assets/icons/minus.png')} />
                                         </Pressable>
                                     </Row>
                                 );
@@ -127,6 +129,7 @@ const styles = StyleSheet.create({
     },
     mainContent: {
         margin: 40,
+        flex: 1
     },
     inputBar: {
         padding: 15,
@@ -164,3 +167,5 @@ const styles = StyleSheet.create({
         width: 24,
     }
 });
+
+export default HomeScreen;
