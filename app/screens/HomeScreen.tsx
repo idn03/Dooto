@@ -1,7 +1,8 @@
 import { StyleSheet, View, TextInput, Pressable, FlatList, Image, Text } from 'react-native';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { Row, Header, CustomText, Divider } from '../components';
 import { useState } from 'react';
+import { Row, Header, CustomText, Divider } from '../components';
+import ConfirmModal from '../components/ConfirmModal';
 
 function setID() {
     return Math.random();
@@ -16,78 +17,85 @@ interface Task {
 const HomeScreen = () => {
     const [todo, setTodo] = useState("");
     const [listTodo, setListTodo] = useState<Task[]>([]);
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+
+    const handleDeleteTask = (task: Task) => {
+        setTaskToDelete(task);
+        setModalVisible(true);
+    };
+
+    const confirmDelete = () => {
+        if (taskToDelete) {
+            const newList = listTodo.filter((task) => task.id !== taskToDelete.id);
+            setListTodo(newList);
+            setTaskToDelete(null);
+        }
+        setModalVisible(false);
+    };
 
     return (
         <View style={styles.background}>
             {/* Header */}
-            < Header />
+            <Header />
 
             {/* Main */}
             <View style={styles.body}>
                 {/* Status */}
                 <Row style={styles.status}>
                     <View style={styles.statusItem}>
-                        <CustomText style={ styles.statusAmount }>{`${listTodo.filter((task) => !task.isDone).length}`}</CustomText>
-                        <CustomText style={ styles.title }>In Progress</CustomText>
+                        <CustomText style={styles.statusAmount}>{`${listTodo.filter((task) => !task.isDone).length}`}</CustomText>
+                        <CustomText style={styles.title}>In Progress</CustomText>
                     </View>
 
                     <View style={styles.statusItem}>
-                        <CustomText style={ styles.title }>Completed</CustomText>
-                        <CustomText style={ styles.statusAmount }>{`${listTodo.filter((task) => task.isDone).length}`}</CustomText>
+                        <CustomText style={styles.title}>Completed</CustomText>
+                        <CustomText style={styles.statusAmount}>{`${listTodo.filter((task) => task.isDone).length}`}</CustomText>
                     </View>
                 </Row>
-                < Divider />
+                <Divider />
 
                 {/* Add New Task */}
                 <View style={styles.mainContent}>
                     <Row>
-                        < TextInput 
-                            style={styles.inputBar} 
-                            placeholder='Add new task here...' 
+                        <TextInput
+                            style={styles.inputBar}
+                            placeholder='Add new task here...'
                             maxLength={25}
                             onChangeText={(value) => setTodo(value)}
                         />
-                        < Pressable 
-                            style={styles.addTaskButton} 
-                            onPress={
-                                () => setListTodo([...listTodo, { id: setID(), name: todo, isDone: false }])
-                            }
+                        <Pressable
+                            style={styles.addTaskButton}
+                            onPress={() => setListTodo([...listTodo, { id: setID(), name: todo, isDone: false }])}
                         >
-                            <CustomText style={{fontWeight: 700}}>ADD</CustomText>
+                            <CustomText style={{ fontWeight: 700 }}>ADD</CustomText>
                         </Pressable>
                     </Row>
-                
+
                     {/* To-do List */}
-                    <View style={{flex: 1, marginTop: 40}}>
+                    <View style={{ flex: 1, marginTop: 40 }}>
                         <CustomText style={styles.title}>To-do List</CustomText>
-                        < FlatList
+                        <FlatList
                             data={listTodo}
                             keyExtractor={(item) => item.id.toString()}
                             keyboardShouldPersistTaps="handled"
                             style={{ flex: 1 }}
-                            renderItem={ ({item}) => {
+                            renderItem={({ item }) => {
                                 return (
                                     <Row style={styles.todoItem}>
                                         <Row>
-                                            <BouncyCheckbox 
-                                                onPress={
-                                                    (isDone: boolean) => { 
-                                                        item.isDone = isDone;
-                                                        setListTodo([...listTodo]);
-                                                    }
-                                                }
+                                            <BouncyCheckbox
+                                                onPress={(isDone: boolean) => {
+                                                    item.isDone = isDone;
+                                                    setListTodo([...listTodo]);
+                                                }}
                                                 fillColor='#333'
                                                 style={styles.checkbox}
                                             />
                                             <Text style={[styles.todoContent, item.isDone && { opacity: 0.6 }]}>{item.name}</Text>
                                         </Row>
-                                        < Pressable 
-                                            onPress={() => {
-                                                const newList = listTodo.filter((task) => task.id !== item.id);
-                                                setListTodo(newList);
-                                            }}
-                                        >
-                                            < Image style={styles.removeTaskIcon} source={require('../../assets/icons/minus.png')} />
+                                        <Pressable onPress={() => handleDeleteTask(item)}>
+                                            <Image style={styles.removeTaskIcon} source={require('../../assets/icons/minus.png')} />
                                         </Pressable>
                                     </Row>
                                 );
@@ -96,6 +104,13 @@ const HomeScreen = () => {
                     </View>
                 </View>
             </View>
+
+            {/* Confirmation Modal */}
+            <ConfirmModal
+                visible={isModalVisible}
+                onConfirm={confirmDelete}
+                onCancel={() => setModalVisible(false)}
+            />
         </View>
     );
 }
