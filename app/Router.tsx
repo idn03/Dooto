@@ -15,7 +15,7 @@ const AppRouter: React.FC = () => {
         <NavigationContainer>
             < RootStack.Navigator
                 initialRouteName="Home"
-                screenOptions={{ headerShown: false,}}
+                screenOptions={{ headerShown: false }}
             >
                 < RootStack.Screen name="Home" component={HomeScreen} />
                 < RootStack.Screen name="Setting" component={SettingScreen} />
